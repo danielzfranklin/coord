@@ -120,7 +120,8 @@ defmodule Coord.Point.UTM do
   defp validate_hemisphere!(_), do: raise(ArgumentError, "Hemisphere does not exist")
 
   # if (!(0<=easting && easting<=1000e3)) throw new RangeError(`invalid UTM easting ‘${easting}’`);
-  defp validate_easting!(e) when 0 <= e and e <= 1_000_000, do: nil
+  # The code is incorrect, an easting can never be zero. See <https://www.maptools.com/tutorials/grid_zone_details>
+  defp validate_easting!(e) when 0 < e and e <= 1_000_000, do: nil
   defp validate_easting!(_), do: raise(ArgumentError, "Easting out of bounds")
 
   # if (hemisphere.toUpperCase()=='N' && !(0<=northing && northing<9328094)) throw new RangeError(`invalid UTM northing ‘${northing}’`);
