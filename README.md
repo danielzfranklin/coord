@@ -26,8 +26,9 @@ iex> LatLng.new(51.178861, -1.826412) |> UTM.from()
   scale: 0.9996826243497345
 }}
 
-The only datum provided by default is WGS84, but you can specify a different datum if it can be
-represented by a surface defined using the same parameters as WGS84.
+The only datum provided by default is WGS84, but you can specify a different
+datum if it can be represented by a surface defined using the same parameters as
+WGS84.
 
 
 ## Installation
