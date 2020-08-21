@@ -8,24 +8,16 @@ defmodule CoordProp.Point do
     property "LatLng -> UTM" do
       forall latlng_point <- latlng_that_can_be_converted_to_utm() do
         utm_point = UTM.from(latlng_point)
-
         reference_utm_point = GeoConvert.latlng_to_utm(latlng_point)
-
-        assert round(utm_point.e) == reference_utm_point.e
-        assert round(utm_point.n) == reference_utm_point.n
-        assert utm_point.hemi == reference_utm_point.hemi
-        assert utm_point.zone == reference_utm_point.zone
+        assert_points_approx_eq(utm_point, reference_utm_point)
       end
     end
 
     property "UTM -> LatLng" do
       forall utm_point <- utm() do
         latlng_point = LatLng.from(utm_point)
-
         reference_latlng_point = GeoConvert.utm_to_latlng(utm_point)
-
-        assert round(latlng_point.lat) == reference_latlng_point.lat
-        assert round(latlng_point.lng) == reference_latlng_point.lng
+        assert_points_approx_eq(latlng_point, reference_latlng_point)
       end
     end
   end
