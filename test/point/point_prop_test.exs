@@ -1,5 +1,5 @@
 defmodule CoordProp.Point do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   use PropCheck, default_opts: [numtests: 1_000]
   import PointHelpers
   use Coord
