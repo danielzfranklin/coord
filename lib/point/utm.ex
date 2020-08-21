@@ -50,7 +50,8 @@ defmodule Coord.Point.UTM do
   `Coord.Point.LatLng` struct for testing purposes.
 
   For an more detailed explanation of UTM and examples of how UTM coordinates can be abbreviated see
-  <http://geokov.com/education/utm.aspx>.
+  <http://geokov.com/education/utm.aspx>. The explanation above is primarily a paraphrase of the
+  resources at Geokov.com.
   """
   alias Coord.Datum
   alias Coord.Point.LatLng
