@@ -166,8 +166,9 @@ defmodule Coord.Point.UTM do
   @doc """
   Create an UTM point from a LatLng point, overriding the correct zone with a different zone.
 
-  The zone specified will be used instead of the zone where the point lies. This may lead to
-  negative eastings and unexpected results due to the Norway/Svalbard exceptions.
+  The zone specified will be used instead of the zone where the point lies. The exceptions for
+  Norway/Svalbard will be applied to the zone specified. This means the code assumes that the zone
+  specified was calculated without taking the exceptions into account.
 
   Uses Karney's method. Accurate up to 5nm if the point is within 3900km of the central meridian.
   """
