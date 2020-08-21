@@ -7,7 +7,7 @@ defmodule GeoConvert do
         # output UTM
         "-u",
         "--input-string",
-        latlng_to_binary(latlng)
+        latlng_to_geoconv(latlng)
       ])
 
     %{"zone" => zone, "hemi" => hemi, "e" => e, "n" => n} =
@@ -37,9 +37,15 @@ defmodule GeoConvert do
   end
 
   # By default elixir would output floats in scientific notation, which GeoConvert misparses
-  defp latlng_to_binary(%LatLng{lat: lat, lng: lng}),
-    do: "#{float_to_binary(lat)} #{float_to_binary(lng)}"
+  defp latlng_to_geoconv(%LatLng{lat: lat, lng: lng}),
+    do: "#{float_to_geoconv(lat)} #{float_to_geoconv(lng)}"
 
-  defp float_to_binary(float),
+  defp utm_to_geoconv(%UTM{zone: zone, hemi: hemi, e: e, n: n}),
+    do: "#{zone}#{hemi_to_geoconv(hemi)} #{float_to_geoconv(e)} #{float_to_geoconv(n)}"
+
+  defp hemi_to_geoconv(:n), do: "n"
+  defp hemi_to_geoconv(:s), do: "s"
+
+  defp float_to_geoconv(float),
     do: :erlang.float_to_binary(float, [:compact, {:decimals, 20}])
 end
