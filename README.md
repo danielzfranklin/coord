@@ -1,7 +1,7 @@
 # Coord
 
 This modules aims to be a port of portions of the library
-[Geodesy](https://www.movable-type.co.uk/). 
+[Geodesy](https://www.movable-type.co.uk/).
  
 Right now it provides structs to represent locations with points in UTM and
 LatLng format, and functions to convert between the two formats.
