@@ -12,9 +12,7 @@ defmodule CoordTest.Point do
 
       start
       |> LatLng.from()
-      |> elem(0)
       |> UTM.from()
-      |> elem(0)
       |> assert_points_approx_eq(start)
     end
 
@@ -23,22 +21,20 @@ defmodule CoordTest.Point do
 
       start
       |> UTM.from()
-      |> elem(0)
       |> LatLng.from()
-      |> elem(0)
       |> assert_points_approx_eq(start)
     end
   end
 
   describe "the default point at stonehenge should convert correctly" do
     test "latlng from utm" do
-      {point, _} = LatLng.from(%UTM{})
-      assert_points_approx_eq(point, %LatLng{})
+      LatLng.from(%UTM{})
+      |> assert_points_approx_eq(%LatLng{})
     end
 
     test "utm from latlng" do
-      {point, _} = UTM.from(%LatLng{})
-      assert_points_approx_eq(point, %UTM{})
+      UTM.from(%LatLng{})
+      |> assert_points_approx_eq(%UTM{})
     end
   end
 end

@@ -8,7 +8,7 @@ defmodule Coord do
 
   iex> use Coord
   iex> LatLng.new(51.178861, -1.826412) |> UTM.from()
-  {%Coord.Point.UTM{
+  %Coord.Point.UTM{
    datum: %Coord.Datum{
      ellipsoid: %Coord.Datum.Ellipsoid{
        a: 6378137,
@@ -20,11 +20,7 @@ defmodule Coord do
    hemi: :n,
    n: 5670369.804561083,
    zone: 30
-  },
-  %Coord.Point.Accuracy{
-    convergence: 324888258.0797715,
-    scale: 0.9996826243497345
-  }}
+  }
 
   The only datum provided by default is WGS84, but you can specify a different datum if it can be
   represented by a surface defined using the same parameters as WGS84.

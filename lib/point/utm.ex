@@ -53,7 +53,7 @@ defmodule Coord.Point.UTM do
   <http://geokov.com/education/utm.aspx>.
   """
   alias Coord.Datum
-  alias Coord.Point.{LatLng, Accuracy}
+  alias Coord.Point.LatLng
   use Coord.Helpers
 
   @type zone :: 1..60
@@ -119,7 +119,7 @@ defmodule Coord.Point.UTM do
 
   iex> use Coord
   iex> LatLng.new(51.178861, -1.826412) |> UTM.from()
-  {%Coord.Point.UTM{
+  %Coord.Point.UTM{
    datum: %Coord.Datum{
      ellipsoid: %Coord.Datum.Ellipsoid{
        a: 6378137,
@@ -131,11 +131,7 @@ defmodule Coord.Point.UTM do
    hemi: :n,
    n: 5670369.804561083,
    zone: 30
-  },
-  %Coord.Point.Accuracy{
-    convergence: 324888258.0797715,
-    scale: 0.9996826243497345
-  }}
+  }
 
   Returns a `Coord.Point.UTM` and a `Coord.Point.Accuracy` describing the
   accuracy of the representation of the UTM easting and northing as a
@@ -144,7 +140,7 @@ defmodule Coord.Point.UTM do
   Uses [Karney's method](https://arxiv.org/abs/1002.1417). Accurate up to 5nm if
   the point is within 3900km of the central meridian.
   """
-  @spec from(%LatLng{}, %Datum{}) :: {%__MODULE__{}, %Accuracy{}}
+  @spec from(%LatLng{}, %Datum{}) :: %__MODULE__{}
   def from(%LatLng{lng: lng} = latlng, datum \\ Datum.wgs84()) do
     # let zone = zoneOverride || Math.floor((this.lon+180)/6) + 1; // longitudinal zone
     from(latlng, datum, floor((lng + 180) / 6) + 1)
@@ -158,7 +154,7 @@ defmodule Coord.Point.UTM do
 
   Uses Karney's method. Accurate up to 5nm if the point is within 3900km of the central meridian.
   """
-  @spec from(%LatLng{}, %Datum{}, zone()) :: {%__MODULE__{}, %Accuracy{}}
+  @spec from(%LatLng{}, %Datum{}, zone()) :: %__MODULE__{}
   def from(%LatLng{lat: lat, lng: lon}, datum, zone) do
     # /**
     #  * Converts latitude/longitude to UTM coordinate.
@@ -305,17 +301,9 @@ defmodule Coord.Point.UTM do
 
     # let pʹ = 1;
     # for (let j=1; j<=6; j++) pʹ += 2*j*α[j] * Math.cos(2*j*ξʹ) * Math.cosh(2*j*ηʹ);
-    pʹ =
-      Enum.reduce(1..6, 1, fn j, pʹ ->
-        pʹ + 2 * j * Enum.at(α, j) * :math.cos(2 * j * ξʹ) * :math.cosh(2 * j * ηʹ)
-      end)
 
     # let qʹ = 0;
     # for (let j=1; j<=6; j++) qʹ += 2*j*α[j] * Math.sin(2*j*ξʹ) * Math.sinh(2*j*ηʹ);
-    qʹ =
-      Enum.reduce(1..6, 0, fn j, qʹ ->
-        qʹ + 2 * j * Enum.at(α, j) * :math.sin(2 * j * ξʹ) * :math.sinh(2 * j * ηʹ)
-      end)
 
     # const γʹ = Math.atan(τʹ / Math.sqrt(1+τʹ*τʹ)*tanλ);
     # const γʺ = Math.atan2(qʹ, pʹ);
@@ -325,18 +313,12 @@ defmodule Coord.Point.UTM do
     # // ---- scale: Karney 2011 Eq 25
 
     # const sinφ = Math.sin(φ);
-    sinφ = :math.sin(φ)
 
     # const kʹ = Math.sqrt(1 - e*e*sinφ*sinφ) * Math.sqrt(1 + τ*τ) / Math.sqrt(τʹ*τʹ + cosλ*cosλ);
-    kʹ =
-      :math.sqrt(1 - e * e * sinφ * sinφ) * :math.sqrt(1 + τ * τ) /
-        :math.sqrt(τʹ * τʹ + cosλ * cosλ)
 
     # const kʺ = A / a * Math.sqrt(pʹ*pʹ + qʹ*qʹ);
-    kʺ = a_cap / a * :math.sqrt(pʹ * pʹ + qʹ * qʹ)
 
     # const k = k0 * kʹ * kʺ;
-    k = k0 * kʹ * kʺ
 
     # // ------------
 
@@ -351,27 +333,19 @@ defmodule Coord.Point.UTM do
     # x = Number(x.toFixed(6)); // nm precision
     # y = Number(y.toFixed(6)); // nm precision
     # const convergence = Number(γ.toDegrees().toFixed(9));
-    convergence = radians_to_degrees(y)
     # const scale = Number(k.toFixed(12));
-    scale = k
 
     # const h = this.lat>=0 ? 'N' : 'S'; // hemisphere
     h = if lat >= 0, do: :n, else: :s
 
     # return new Utm(zone, h, x, y, this.datum, convergence, scale, !!zoneOverride);
     # }
-    {
-      %__MODULE__{
-        zone: zone,
-        hemi: h,
-        e: x,
-        n: y,
-        datum: datum
-      },
-      %Accuracy{
-        convergence: convergence,
-        scale: scale
-      }
+    %__MODULE__{
+      zone: zone,
+      hemi: h,
+      e: x,
+      n: y,
+      datum: datum
     }
   end
 

@@ -13,7 +13,7 @@ defmodule Coord.Point.LatLng do
   * Latitude is North <-> South, north of the equator is positive, south is negative
   * Longitude is East <-> West, east of the prime meridian is positive, west is negative
   """
-  alias Coord.Point.{UTM, Accuracy}
+  alias Coord.Point.UTM
   use Coord.Helpers
 
   @typedoc """
@@ -35,14 +35,11 @@ defmodule Coord.Point.LatLng do
   @doc """
   Create a LatLng point from an UTM point.
 
-  Returns a `Coord.Point.LatLng` and a `Coord.Point.Accuracy` describing the accuracy of the
-  representation of the latitude and longitude as a representation of a point in the real world.
-
   Uses [Karney's method](https://arxiv.org/abs/1002.1417). Accurate up to 5nm if the point is within
   3900km of the central meridian.
   """
-  @spec from(%UTM{}) :: {%__MODULE__{}, %Accuracy{}}
-  def from(%UTM{zone: z, hemi: h, e: easting, n: northing, datum: datum}) do
+  @spec from(%UTM{}) :: %__MODULE__{}
+  def(from(%UTM{zone: z, hemi: h, e: easting, n: northing, datum: datum})) do
     # /**
     #  * Converts UTM zone/easting/northing coordinate to latitude/longitude.
     #  *
@@ -181,40 +178,22 @@ defmodule Coord.Point.LatLng do
 
     # let p = 1;
     # for (let j=1; j<=6; j++) p -= 2*j*β[j] * Math.cos(2*j*ξ) * Math.cosh(2*j*η);
-    p =
-      Enum.reduce(1..6, 1, fn j, p ->
-        p - 2 * j * Enum.at(β, j) * :math.cos(2 * j * ξ) * :math.cosh(2 * j * η)
-      end)
 
     # let q = 0;
     # for (let j=1; j<=6; j++) q += 2*j*β[j] * Math.sin(2*j*ξ) * Math.sinh(2*j*η);
-    q =
-      Enum.reduce(1..6, 0, fn j, q ->
-        q + 2 * j * Enum.at(β, j) * :math.sin(2 * j * ξ) * :math.sinh(2 * j * η)
-      end)
 
     # const γʹ = Math.atan(Math.tan(ξʹ) * Math.tanh(ηʹ));
-    γʹ = :math.atan(:math.tan(ξʹ) * :math.tanh(ηʹ))
     # const γʺ = Math.atan2(q, p);
-    γʺ = :math.atan2(q, p)
-
-    γ = γʹ + γʺ
 
     # // ---- scale: Karney 2011 Eq 28
 
     # const sinφ = Math.sin(φ);
-    sinφ = :math.sin(φ)
 
     # const kʹ = Math.sqrt(1 - e*e*sinφ*sinφ) * Math.sqrt(1 + τ*τ) * Math.sqrt(sinhηʹ*sinhηʹ + cosξʹ*cosξʹ);
-    kʹ =
-      :math.sqrt(1 - e * e * sinφ * sinφ) * :math.sqrt(1 + τ * τ) *
-        :math.sqrt(sinhηʹ * sinhηʹ + cosξʹ * cosξʹ)
 
     # const kʺ = A / a / Math.sqrt(p*p + q*q);
-    kʺ = a_cap / a / :math.sqrt(p * p + q * q)
 
     # const k = k0 * kʹ * kʺ;
-    k = k0 * kʹ * kʺ
 
     # // ------------
 
@@ -231,10 +210,8 @@ defmodule Coord.Point.LatLng do
     lon = radians_to_degrees(λ)
 
     # const convergence = Number(γ.toDegrees().toFixed(9));
-    convergence = radians_to_degrees(γ)
 
     # const scale = Number(k.toFixed(12));
-    scale = k
 
     # const latLong = new LatLon_Utm(lat, lon, 0, this.datum);
     # // ... and add the convergence and scale into the LatLon object ... wonderful JavaScript!
@@ -243,15 +220,9 @@ defmodule Coord.Point.LatLng do
     # return latLong;
     # }
 
-    {
-      %__MODULE__{
-        lat: lat,
-        lng: lon
-      },
-      %Accuracy{
-        scale: scale,
-        convergence: convergence
-      }
+    %__MODULE__{
+      lat: lat,
+      lng: lon
     }
   end
 end
