@@ -7,7 +7,9 @@ defmodule Coord.MixProject do
       version: "0.1.0",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      # See <https://elixirforum.com/t/loading-modules-in-test-helper-exs-file/16609>
+      elixirc_paths: elixirc_paths(Mix.env())
     ]
   end
 
@@ -23,4 +25,7 @@ defmodule Coord.MixProject do
     [
     ]
   end
+
+  def elixirc_paths(:test), do: ["test/support"] ++ elixirc_paths(:prod)
+  def elixirc_paths(_), do: ["lib"]
 end
