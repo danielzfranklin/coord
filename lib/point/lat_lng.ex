@@ -214,6 +214,10 @@ defmodule Coord.Point.LatLng do
     # const scale = Number(k.toFixed(12));
 
     # const latLong = new LatLon_Utm(lat, lon, 0, this.datum);
+    # NOTE: the constructor above wraps the lat and lon
+    lat = wrap_lat(lat)
+    lon = wrap_lng(lon)
+
     # // ... and add the convergence and scale into the LatLon object ... wonderful JavaScript!
     # latLong.convergence = convergence;
     # latLong.scale = scale;
@@ -224,5 +228,50 @@ defmodule Coord.Point.LatLng do
       lat: lat,
       lng: lon
     }
+  end
+
+  defp wrap_lng(lng) when -180 < lng and lng <= 180 do
+    # From <https://cdn.jsdelivr.net/npm/geodesy@2/dms.js>, eventually called by the LatLon_Utm
+    # constructor
+    #
+    # /**
+    #  * Constrain degrees to range -180..+180 (e.g. for longitude); -181 => 179, 181 => -179.
+    #  *
+    #  * @private
+    #  * @param {number} degrees
+    #  * @returns degrees within range -180..+180.
+    #    */
+    # static wrap180(degrees) {if (-180<degrees && degrees<=180) return degrees; // avoid rounding
+    #   due to arithmetic ops if within range
+    lng
+  end
+
+  defp wrap_lng(lng) do
+    #   return (degrees+540)%360-180; // sawtooth wave p:180, a:±180
+    # }
+    fmod(lng + 540, 360) - 180
+  end
+
+  def wrap_lat(lat) when -90 <= lat and lat <= 90 do
+    # From <https://cdn.jsdelivr.net/npm/geodesy@2/dms.js>, eventually called by the LatLon_Utm
+    # constructor
+    #
+    # /**
+    #  * Constrain degrees to range -90..+90 (e.g. for latitude); -91 => -89, 91 => 89.
+    #  *
+    #  * @private
+    #  * @param {number} degrees
+    #  * @returns degrees within range -90..+90.
+    #  */
+    # static wrap90(degrees) {
+    #   if (-90<=degrees && degrees<=90) return degrees; // avoid rounding due to arithmetic ops if within range
+    lat
+  end
+
+  def wrap_lat(lat) do
+    #   return Math.abs((degrees%360 + 270)%360 - 180) - 90; // triangle wave p:360 a:±90 TODO: fix e.g. -315°
+    # }
+    # TODO: what is the implication of the todo comment above?
+    abs(fmod(fmod(lat, 360) + 270, 360) - 180) - 90
   end
 end
