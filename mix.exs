@@ -8,6 +8,11 @@ defmodule Coord.MixProject do
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      preferred_cli_env: [
+        propcheck: :test,
+        "propcheck.clean": :test,
+        "propcheck.inspect": :test
+      ],
       # See <https://elixirforum.com/t/loading-modules-in-test-helper-exs-file/16609>
       elixirc_paths: elixirc_paths(Mix.env())
     ]
@@ -23,6 +28,7 @@ defmodule Coord.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:propcheck, "~> 1.2", only: :test}
     ]
   end
 

@@ -30,6 +30,14 @@ The only datum provided by default is WGS84, but you can specify a different
 datum if it can be represented by a surface defined using the same parameters as
 WGS84.
 
+## Testing
+The LatLng -> UTM and UTM -> LatLng conversions in this library are tested
+against the reference implementation GeographicLib which Geodesy is also based
+on. This means that to run some of the tests you will need to install the
+command line utility
+[GeoConvert](https://geographiclib.sourceforge.io/html/GeoConvert.1.html). On
+Ubuntu you may be able to do this via `apt install geographiclib-tools`. 
+
 
 ## Installation
 
