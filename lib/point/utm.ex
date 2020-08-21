@@ -74,6 +74,22 @@ defmodule Coord.Point.UTM do
             n: 5_670_370,
             datum: Datum.wgs84()
 
+  # NOTE: Each zone is segmented into 20 latitude bands. Each latitude band is 8 degrees high, and
+  # is lettered starting from "C" at 80°S, increasing up the English alphabet until "X", omitting
+  # the letters "I" and "O" (because of their similarity to the numerals one and zero). The last
+  # latitude band, "X", is extended an extra 4 degrees, so it ends at 84°N latitude, thus covering
+  # the northernmost land on Earth.
+  #
+  # Latitude bands "A" and "B" do exist, as do bands "Y" and "Z". They cover the western and eastern
+  # sides of the Antarctic and Arctic regions respectively. A convenient mnemonic to remember is
+  # that the letter "N" is the first letter in "northern hemisphere", so any letter coming before
+  # "N" in the alphabet is in the southern hemisphere, and any letter "N" or after is in the
+  # northern hemisphere.
+  #
+  # Credit Wikipedia
+  # <https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system#Latitude%20bands>
+  @mgrs_bands ~w(C D E F G H J K L M N P Q R S T U V W X X)
+
   @spec new(zone(), hemi(), float(), float(), Datum.t()) :: %__MODULE__{}
   def new(zone, hemi, e, n, datum \\ Datum.wgs84()) do
     validate_zone!(zone)
@@ -188,10 +204,8 @@ defmodule Coord.Point.UTM do
     # // grid zones are 8° tall; 0°N is offset 10 into latitude bands array
 
     # const mgrsLatBands = 'CDEFGHJKLMNPQRSTUVWXX'; // X is repeated for 80-84°N
-    mgrs_lat_bands = ~w(C D E F G H J K L M N P Q R S T U V W X X)
-
     # const latBand = mgrsLatBands.charAt(Math.floor(this.lat/8+10));
-    latBand = Enum.at(mgrs_lat_bands, floor(lat / 8 + 10))
+    latBand = Enum.at(@mgrs_bands, floor(lat / 8 + 10))
 
     # // adjust zone & central meridian for Norway
     {zone, λ0} =
