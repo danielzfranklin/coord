@@ -170,7 +170,7 @@ defmodule Coord.Point.UTM do
   Norway/Svalbard will be applied to the zone specified. This means the code assumes that the zone
   specified was calculated without taking the exceptions into account.
 
-  Uses Karney's method. Accurate up to 5nm if the point is within 3900km of the central meridian.
+  See `Coord.Point.UTM.from/2` for details.
   """
   @spec from(%LatLng{}, %Datum{}, zone()) :: %__MODULE__{}
   def from(%LatLng{lat: lat, lng: lon}, datum, zone) do
