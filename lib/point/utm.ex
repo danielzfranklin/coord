@@ -88,7 +88,7 @@ defmodule Coord.Point.UTM do
   #
   # Credit Wikipedia
   # <https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system#Latitude%20bands>
-  @mgrs_bands ~w(C D E F G H J K L M N P Q R S T U V W X X)
+  @mgrs_bands [:c, :d, :e, :f, :g, :h, :j, :k, :l, :m, :n, :p, :q, :r, :s, :t, :u, :v, :w, :x, :x]
 
   @spec new(zone(), hemi(), float(), float(), Datum.t()) :: %__MODULE__{}
   def new(zone, hemi, e, n, datum \\ Datum.wgs84()) do
@@ -213,20 +213,20 @@ defmodule Coord.Point.UTM do
     {zone, λ0} =
       cond do
         # if (zone==31 && latBand=='V' && this.lon>= 3) { zone++; λ0 += (6).toRadians(); }
-        zone == 31 and latBand == "V" and lon >= 3 -> {zone + 1, λ0 + degrees_to_radians(6)}
+        zone == 31 and latBand == :v and lon >= 3 -> {zone + 1, λ0 + degrees_to_radians(6)}
         # // adjust zone & central meridian for Svalbard
         # if (zone==32 && latBand=='X' && this.lon<  9) { zone--; λ0 -= (6).toRadians(); }
-        zone == 32 and latBand == "X" and lon < 9 -> {zone - 1, λ0 - degrees_to_radians(6)}
+        zone == 32 and latBand == :x and lon < 9 -> {zone - 1, λ0 - degrees_to_radians(6)}
         # if (zone==32 && latBand=='X' && this.lon>= 9) { zone++; λ0 += (6).toRadians(); }
-        zone == 32 and latBand == "X" and lon >= 9 -> {zone + 1, λ0 + degrees_to_radians(6)}
+        zone == 32 and latBand == :x and lon >= 9 -> {zone + 1, λ0 + degrees_to_radians(6)}
         # if (zone==34 && latBand=='X' && this.lon< 21) { zone--; λ0 -= (6).toRadians(); }
-        zone == 34 and latBand == "X" and lon < 21 -> {zone - 1, λ0 - degrees_to_radians(6)}
+        zone == 34 and latBand == :x and lon < 21 -> {zone - 1, λ0 - degrees_to_radians(6)}
         # if (zone==34 && latBand=='X' && this.lon>=21) { zone++; λ0 += (6).toRadians(); }
-        zone == 34 and latBand == "X" and lon >= 21 -> {zone + 1, λ0 + degrees_to_radians(6)}
+        zone == 34 and latBand == :x and lon >= 21 -> {zone + 1, λ0 + degrees_to_radians(6)}
         # if (zone==36 && latBand=='X' && this.lon< 33) { zone--; λ0 -= (6).toRadians(); }
-        zone == 36 and latBand == "X" and lon < 33 -> {zone - 1, λ0 - degrees_to_radians(6)}
+        zone == 36 and latBand == :x and lon < 33 -> {zone - 1, λ0 - degrees_to_radians(6)}
         # if (zone==36 && latBand=='X' && this.lon>=33) { zone++; λ0 += (6).toRadians(); }
-        zone == 36 and latBand == "X" and lon >= 33 -> {zone + 1, λ0 + degrees_to_radians(6)}
+        zone == 36 and latBand == :x and lon >= 33 -> {zone + 1, λ0 + degrees_to_radians(6)}
         true -> {zone, λ0}
       end
 
