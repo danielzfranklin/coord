@@ -213,20 +213,20 @@ defmodule Coord.Point.UTM do
     {zone, λ0} =
       cond do
         # if (zone==31 && latBand=='V' && this.lon>= 3) { zone++; λ0 += (6).toRadians(); }
-        zone == 31 and latBand == "V" && lon >= 3 -> {zone + 1, λ0 + degrees_to_radians(6)}
+        zone == 31 and latBand == "V" and lon >= 3 -> {zone + 1, λ0 + degrees_to_radians(6)}
         # // adjust zone & central meridian for Svalbard
         # if (zone==32 && latBand=='X' && this.lon<  9) { zone--; λ0 -= (6).toRadians(); }
-        zone == 32 and latBand == "X" && lon < 9 -> {zone - 1, λ0 - degrees_to_radians(6)}
+        zone == 32 and latBand == "X" and lon < 9 -> {zone - 1, λ0 - degrees_to_radians(6)}
         # if (zone==32 && latBand=='X' && this.lon>= 9) { zone++; λ0 += (6).toRadians(); }
-        zone == 32 && latBand == 'X' && lon >= 9 -> {zone + 1, λ0 + degrees_to_radians(6)}
+        zone == 32 and latBand == 'X' and lon >= 9 -> {zone + 1, λ0 + degrees_to_radians(6)}
         # if (zone==34 && latBand=='X' && this.lon< 21) { zone--; λ0 -= (6).toRadians(); }
-        zone == 34 && latBand == 'X' && lon < 21 -> {zone - 1, λ0 - degrees_to_radians(6)}
+        zone == 34 and latBand == 'X' and lon < 21 -> {zone - 1, λ0 - degrees_to_radians(6)}
         # if (zone==34 && latBand=='X' && this.lon>=21) { zone++; λ0 += (6).toRadians(); }
-        zone == 34 && latBand == 'X' && lon >= 21 -> {zone + 1, λ0 + degrees_to_radians(6)}
+        zone == 34 and latBand == 'X' and lon >= 21 -> {zone + 1, λ0 + degrees_to_radians(6)}
         # if (zone==36 && latBand=='X' && this.lon< 33) { zone--; λ0 -= (6).toRadians(); }
-        zone == 36 && latBand == 'X' && lon < 33 -> {zone - 1, λ0 - degrees_to_radians(6)}
+        zone == 36 and latBand == 'X' and lon < 33 -> {zone - 1, λ0 - degrees_to_radians(6)}
         # if (zone==36 && latBand=='X' && this.lon>=33) { zone++; λ0 += (6).toRadians(); }
-        zone == 36 && latBand == 'X' && lon >= 33 -> {zone + 1, λ0 + degrees_to_radians(6)}
+        zone == 36 and latBand == 'X' and lon >= 33 -> {zone + 1, λ0 + degrees_to_radians(6)}
         true -> {zone, λ0}
       end
 
