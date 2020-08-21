@@ -218,15 +218,15 @@ defmodule Coord.Point.UTM do
         # if (zone==32 && latBand=='X' && this.lon<  9) { zone--; λ0 -= (6).toRadians(); }
         zone == 32 and latBand == "X" and lon < 9 -> {zone - 1, λ0 - degrees_to_radians(6)}
         # if (zone==32 && latBand=='X' && this.lon>= 9) { zone++; λ0 += (6).toRadians(); }
-        zone == 32 and latBand == 'X' and lon >= 9 -> {zone + 1, λ0 + degrees_to_radians(6)}
+        zone == 32 and latBand == "X" and lon >= 9 -> {zone + 1, λ0 + degrees_to_radians(6)}
         # if (zone==34 && latBand=='X' && this.lon< 21) { zone--; λ0 -= (6).toRadians(); }
-        zone == 34 and latBand == 'X' and lon < 21 -> {zone - 1, λ0 - degrees_to_radians(6)}
+        zone == 34 and latBand == "X" and lon < 21 -> {zone - 1, λ0 - degrees_to_radians(6)}
         # if (zone==34 && latBand=='X' && this.lon>=21) { zone++; λ0 += (6).toRadians(); }
-        zone == 34 and latBand == 'X' and lon >= 21 -> {zone + 1, λ0 + degrees_to_radians(6)}
+        zone == 34 and latBand == "X" and lon >= 21 -> {zone + 1, λ0 + degrees_to_radians(6)}
         # if (zone==36 && latBand=='X' && this.lon< 33) { zone--; λ0 -= (6).toRadians(); }
-        zone == 36 and latBand == 'X' and lon < 33 -> {zone - 1, λ0 - degrees_to_radians(6)}
+        zone == 36 and latBand == "X" and lon < 33 -> {zone - 1, λ0 - degrees_to_radians(6)}
         # if (zone==36 && latBand=='X' && this.lon>=33) { zone++; λ0 += (6).toRadians(); }
-        zone == 36 and latBand == 'X' and lon >= 33 -> {zone + 1, λ0 + degrees_to_radians(6)}
+        zone == 36 and latBand == "X" and lon >= 33 -> {zone + 1, λ0 + degrees_to_radians(6)}
         true -> {zone, λ0}
       end
 
