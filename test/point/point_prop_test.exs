@@ -17,6 +17,17 @@ defmodule CoordProp.Point do
         assert utm_point.zone == reference_utm_point.zone
       end
     end
+
+    property "UTM -> LatLng" do
+      forall utm_point <- utm() do
+        latlng_point = LatLng.from(utm_point)
+
+        reference_latlng_point = GeoConvert.utm_to_latlng(utm_point)
+
+        assert round(latlng_point.lat) == reference_latlng_point.lat
+        assert round(latlng_point.lng) == reference_latlng_point.lng
+      end
+    end
   end
 
   def latlng_that_can_be_converted_to_utm() do

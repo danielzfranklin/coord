@@ -36,6 +36,30 @@ defmodule GeoConvert do
     %UTM{zone: zone, hemi: hemi, e: e, n: n, datum: Datum.wgs84()}
   end
 
+  def utm_to_latlng(utm) do
+    {out, 0} =
+      System.cmd("GeoConvert", [
+        # output LatLng in decimal
+        "-g",
+        "--input-string",
+        utm_to_geoconv(utm)
+      ])
+
+    %{"lat" => lat, "lng" => lng} =
+      Regex.named_captures(
+        ~r/^
+      (?<lat>-?[\d.]+)\s
+      (?<lng>-?[\d.]+)\s
+      /x,
+        out
+      )
+
+    lat = String.to_float(lat)
+    lng = String.to_float(lng)
+
+    %LatLng{lat: lat, lng: lng}
+  end
+
   # By default elixir would output floats in scientific notation, which GeoConvert misparses
   defp latlng_to_geoconv(%LatLng{lat: lat, lng: lng}),
     do: "#{float_to_geoconv(lat)} #{float_to_geoconv(lng)}"
