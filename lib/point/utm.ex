@@ -121,7 +121,7 @@ defmodule Coord.Point.UTM do
 
   # if (!(0<=easting && easting<=1000e3)) throw new RangeError(`invalid UTM easting ‘${easting}’`);
   # The code is incorrect, an easting can never be zero. See <https://www.maptools.com/tutorials/grid_zone_details>
-  defp validate_easting!(e) when 0 < e and e <= 1_000_000, do: nil
+  defp validate_easting!(e) when 100_000 <= e and e < 900_000, do: nil
   defp validate_easting!(_), do: raise(ArgumentError, "Easting out of bounds")
 
   # if (hemisphere.toUpperCase()=='N' && !(0<=northing && northing<9328094)) throw new RangeError(`invalid UTM northing ‘${northing}’`);
