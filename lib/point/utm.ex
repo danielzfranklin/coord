@@ -370,5 +370,34 @@ defmodule Coord.Point.UTM do
   defp validate_within_utm_limits!(lat) when -80 <= lat and lat <= 84, do: nil
   defp validate_within_utm_limits!(_), do: raise(ArgumentError, "Latitude outside UTM limits")
 
-  # def grid_zone(%__MODULE__{} = utm)
+  @spec mgrs_band(%__MODULE__{}) ::
+          :c
+          | :d
+          | :e
+          | :f
+          | :g
+          | :h
+          | :j
+          | :k
+          | :l
+          | :m
+          | :n
+          | :p
+          | :q
+          | :r
+          | :s
+          | :t
+          | :u
+          | :v
+          | :w
+          | :x
+  def mgrs_band(%__MODULE__{} = utm) do
+    # Ported from <www.movable-type.co.uk/scripts/geodesy-library.html#mgrs>
+    # // convert UTM to lat/long to get latitude to determine band
+    # const latlong = this.toLatLon();
+    %{lat: lat} = LatLng.from(utm)
+    # // grid zones are 8° tall, 0°N is 10th band
+    # const band = latBands.charAt(Math.floor(latlong.lat/8+10)); // latitude band
+    Enum.at(@mgrs_bands, floor(lat / 8 + 10))
+  end
 end

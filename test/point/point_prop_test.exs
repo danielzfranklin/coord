@@ -53,6 +53,11 @@ defmodule CoordTest.Point.PropTest do
     end
   end
 
+  property "UTM.mgrs_band/1 should give same result as reference" do
+    forall point <- utm() do
+      band = UTM.mgrs_band(point)
+      reference_band = GeoConvert.utm_to_mgrs_band(point)
+      assert band == reference_band
     end
   end
 end
