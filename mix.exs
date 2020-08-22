@@ -43,7 +43,7 @@ defmodule Coord.MixProject do
     """
     Convert between latitude/longitude and UTM.
 
-    Tested by comparing the results of converting hundreds of thousands of points
+    Tested by comparing the results of converting hundreds of thousands of coordinates
     against a reference implementation.
     """
   end
