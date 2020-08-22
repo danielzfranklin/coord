@@ -14,7 +14,17 @@ defmodule Coord.MixProject do
         "propcheck.inspect": :test
       ],
       # See <https://elixirforum.com/t/loading-modules-in-test-helper-exs-file/16609>
-      elixirc_paths: elixirc_paths(Mix.env())
+      elixirc_paths: elixirc_paths(Mix.env()),
+      # docs
+      name: "Coord",
+      source_url: "https://github.com/dzfranklin/coord",
+      # homepage_url: "http://YOUR_PROJECT_HOMEPAGE",
+      docs: [
+        # The main page in the docs
+        main: "Coord"
+        # logo: "path/to/logo.png",
+        # extras: ["README.md"]
+      ]
     ]
   end
 
@@ -28,7 +38,8 @@ defmodule Coord.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:propcheck, "~> 1.2", only: :test}
+      {:propcheck, "~> 1.2", only: :test},
+      {:ex_doc, "~> 0.22", only: :dev, runtime: false}
     ]
   end
 

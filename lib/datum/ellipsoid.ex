@@ -1,7 +1,16 @@
 defmodule Coord.Datum.Ellipsoid do
   @moduledoc """
   Specified the shape of the surface of a `Coord.Datum`. See the typedoc for
-  `Coord.Datum.Ellipsoid.t` for the specifics of how to create an instance.
+  `t:Coord.Datum.Ellipsoid.t/0` for the specifics of how to create an instance.
+
+  ## Concept
+
+  An ellipsoid is a surface that approximates the shape of the earth. It is
+  constructed by flattening a sphere. WGS84 is defined by an ellipsoid with
+  specific parameters. Other datum either use different parameters of different
+  shapes altogether.
+
+  Source: <https://en.wikipedia.org/wiki/Reference_ellipsoid>
   """
 
   @typedoc """
@@ -17,8 +26,9 @@ defmodule Coord.Datum.Ellipsoid do
   For example, the function `Coord.Datum.wgs84/0` creates an instance of an `Coord.Datum.Ellipsoid`
   that looks like this:
 
-  %Coord.Datum.Ellipsoid{a: 6_378_137, b: 6_356_752.314245, f: 1 / 298.257223563
-  }
+  ```
+  %Coord.Datum.Ellipsoid{a: 6_378_137, b: 6_356_752.314245, f: 1 / 298.257223563}
+  ```
   """
   @type t :: %__MODULE__{
           a: integer(),

@@ -6,9 +6,10 @@ This modules aims to be a port of portions of the library
 Right now it provides structs to represent locations with points in UTM and
 LatLng format, and functions to convert between the two formats.
 
+```elixir
 iex> use Coord
 iex> LatLng.new(51.178861, -1.826412) |> UTM.from()
-{%Coord.Point.UTM{
+%Coord.Point.UTM{
   datum: %Coord.Datum{
     ellipsoid: %Coord.Datum.Ellipsoid{
       a: 6378137,
@@ -20,11 +21,8 @@ iex> LatLng.new(51.178861, -1.826412) |> UTM.from()
   hemi: :n,
   n: 5670369.804561083,
   zone: 30
-},
-%Coord.Point.Accuracy{
-  convergence: 324888258.0797715,
-  scale: 0.9996826243497345
-}}
+}
+```
 
 The only datum provided by default is WGS84, but you can specify a different
 datum if it can be represented by a surface defined using the same parameters as
@@ -32,7 +30,7 @@ WGS84.
 
 ## Testing
 The LatLng -> UTM and UTM -> LatLng conversions in this library are tested
-against the reference implementation GeographicLib which Geodesy is also based
+against the reference implementation GeographicLib, which Geodesy is also based
 on. This means that to run some of the tests you will need to install the
 command line utility
 [GeoConvert](https://geographiclib.sourceforge.io/html/GeoConvert.1.html). On
@@ -55,4 +53,3 @@ end
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/coord](https://hexdocs.pm/coord).
-

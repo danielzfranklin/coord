@@ -3,21 +3,28 @@ defmodule Coord.Point.UTM do
   A point represented by a hemisphere of the globe (north or south), one of sixty numbered 6 degrees
   of longitude wide zones, an easting, and a northing.
 
-    iex> use Coord
-    iex> _point = UTM.new(30, :n, 582_032, 5_670_370)
-    %Coord.Point.UTM{
-      datum: %Coord.Datum{
-        ellipsoid: %Coord.Datum.Ellipsoid{
-          a: 6378137,
-          b: 6356752.314245,
-          f: 0.0033528106647474805
-        }
-      },
-      e: 582032,
-      hemi: :n,
-      n: 5670370,
-      zone: 30
-    }
+  ```
+  iex> use Coord
+  iex> _point = UTM.new(30, :n, 582_032, 5_670_370)
+  %Coord.Point.UTM{
+    datum: %Coord.Datum{
+      ellipsoid: %Coord.Datum.Ellipsoid{
+        a: 6378137,
+        b: 6356752.314245,
+        f: 0.0033528106647474805
+      }
+    },
+    e: 582032,
+    hemi: :n,
+    n: 5670370,
+    zone: 30
+  }
+  ```
+
+  By the way, the default values of the struct point to the same point at Stonehenge as the default
+  values of the `Coord.Point.LatLng` struct for testing purposes.
+
+  ## Concept
 
   You may see UTM coordinates which specify hemispheres with the letter N or S, or you may see them
   specify an [MGRS](https://en.wikipedia.org/wiki/Military_Grid_Reference_System) band instead. This
@@ -46,20 +53,39 @@ defmodule Coord.Point.UTM do
 
   A datum represents the approximation used to fit a grid system onto our irregularly shaped world.
 
-  By the way, the default values of the struct point to the same point at Stonehenge as the
-  `Coord.Point.LatLng` struct for testing purposes.
-
   For an more detailed explanation of UTM and examples of how UTM coordinates can be abbreviated see
-  <http://geokov.com/education/utm.aspx>. The explanation above is primarily a paraphrase of the
-  resources at Geokov.com.
+  (Geokov)[http://geokov.com/education/utm.aspx].
+
+  Source: <http://geokov.com/education/utm.aspx>
   """
   alias Coord.Datum
   alias Coord.Point.LatLng
   use Coord.Helpers
 
+  @typedoc """
+  UTM Zone
+
+  The 30 in *30* N 582032 5670370
+  """
   @type zone :: 1..60
+
+  @typedoc """
+  Hemisphere
+
+  The N in 30 *N* 582032 5670370
+  """
   @type hemi :: :n | :s
 
+  @typedoc """
+  A struct containing a UTM point.
+
+  Keys:
+
+  * `:zone`: UTM Zone. The 30 in **30** N 582032 5670370
+  * `:hemi`: Hemisphere. The N in 30 **N** 582032 5670370
+  * `:e`: Easting. The 582032 in 30 N **582032** 5670370
+  * `:n`: Northing. The 5825670370032 in 30 N 582032 **5670370**
+  """
   @type t :: %__MODULE__{
           zone: zone(),
           hemi: hemi(),
@@ -90,7 +116,10 @@ defmodule Coord.Point.UTM do
   # <https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system#Latitude%20bands>
   @mgrs_bands [:c, :d, :e, :f, :g, :h, :j, :k, :l, :m, :n, :p, :q, :r, :s, :t, :u, :v, :w, :x, :x]
 
-  @spec new(zone(), hemi(), float(), float(), Datum.t()) :: %__MODULE__{}
+  @doc """
+  Create a new UTM point from a zone, hemisphere, easting, northing, and optional datum
+  """
+  @spec new(zone(), hemi(), float(), float(), Datum.t()) :: t()
   def new(zone, hemi, e, n, datum \\ Datum.wgs84()) do
     validate_zone!(zone)
     validate_hemisphere!(hemi)
@@ -135,6 +164,7 @@ defmodule Coord.Point.UTM do
   @doc """
   Create an UTM point from a LatLng point.
 
+  ```
   iex> use Coord
   iex> LatLng.new(51.178861, -1.826412) |> UTM.from()
   %Coord.Point.UTM{
@@ -150,15 +180,14 @@ defmodule Coord.Point.UTM do
    n: 5670369.804561083,
    zone: 30
   }
+  ```
 
-  Returns a `Coord.Point.UTM` and a `Coord.Point.Accuracy` describing the
-  accuracy of the representation of the UTM easting and northing as a
-  representation of a point in the real world.
+  Returns a `Coord.Point.UTM`.
 
   Uses [Karney's method](https://arxiv.org/abs/1002.1417). Accurate up to 5nm if
   the point is within 3900km of the central meridian.
   """
-  @spec from(%LatLng{}, %Datum{}) :: %__MODULE__{}
+  @spec from(LatLng.t(), Datum.t()) :: t()
   def from(%LatLng{lng: lng} = latlng, datum \\ Datum.wgs84()) do
     # let zone = zoneOverride || Math.floor((this.lon+180)/6) + 1; // longitudinal zone
     from(latlng, datum, floor((lng + 180) / 6) + 1)
@@ -173,7 +202,7 @@ defmodule Coord.Point.UTM do
 
   See `Coord.Point.UTM.from/2` for details.
   """
-  @spec from(%LatLng{}, %Datum{}, zone()) :: %__MODULE__{}
+  @spec from(LatLng.t(), Datum.t(), zone()) :: t()
   def from(%LatLng{lat: lat, lng: lon}, datum, zone) do
     # /**
     #  * Converts latitude/longitude to UTM coordinate.
@@ -370,7 +399,20 @@ defmodule Coord.Point.UTM do
   defp validate_within_utm_limits!(lat) when -80 <= lat and lat <= 84, do: nil
   defp validate_within_utm_limits!(_), do: raise(ArgumentError, "Latitude outside UTM limits")
 
-  @spec mgrs_band(%__MODULE__{}) ::
+  @doc """
+  Returns the MGRS band an UTM coordinate is in.
+
+  ## Concept
+
+  (MGRS)[https://en.wikipedia.org/wiki/Military_Grid_Reference_System] is a separate coordinate
+  system similar to UTM. One aspect is that in addition to zones it also has bands start at A at the
+  north pole go to Z at the south pole, skipping I and O because they could be confused with the
+  numbers 1 and 0.
+
+  Despite being from a separate system some people write UTM coordinates with an MGRS band instead
+  of a hemisphere, such as 30 U 582032 5670370 instead of 30 N 582032 5670370.
+  """
+  @spec mgrs_band(t()) ::
           :c
           | :d
           | :e

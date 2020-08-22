@@ -2,21 +2,41 @@ defmodule Coord.Point.LatLng do
   @moduledoc """
   A point represented by a latitude and longitude.
 
-    iex> use Coord
-    iex> _point = LatLng.new(51.178861, -1.826412)
-    %Coord.Point.LatLng{lat: 51.178861, lng: -1.826412}
+  ```
+  iex> use Coord
+  iex> _point = LatLng.new(51.178861, -1.826412)
+  %Coord.Point.LatLng{lat: 51.178861, lng: -1.826412}
+  ```
 
-  By the way, the default values of the struct point to the same point at Stonehenge as the
-  `Coord.Point.LatLng` struct for testing purposes.
+  By the way, the default values of the struct point to the same point at
+  Stonehenge as the default values of the `Coord.Point.LatLng` struct for
+  testing purposes.
 
-  Note that:
-  * Latitude is North <-> South, north of the equator is positive, south is negative
-  * Longitude is East <-> West, east of the prime meridian is positive, west is negative
+  ## Concept
+
+  The latitude of a point is defined as the angle between a line from that point
+  to the center of the earth and the equatorial plane. Latitude lines run from
+  north to south. This library follows the convention that north of the equator
+  is positive and south of the equator is negative.
+
+  The longitude of a point is defined as the angle between the meridian that
+  passes through that point and the prime meridian. Longitude lines run east to
+  west. This library follows the convention that meridians east of the prime
+  meridian are positive and meridians west of the prime meridian are negative.
+
+  Great ellipses are the intersection the earth and planes that pass through the
+  center of the earth. Meridians are halves of the great ellipses which also
+  pass through the poles.
+
+  Source:
+  <https://en.wikipedia.org/wiki/Geographic_coordinate_system#Latitude_and_longitude>
   """
   alias Coord.Point.UTM
   use Coord.Helpers
 
   @typedoc """
+  A struct containing a latitude and longitude.
+
   Keys:
 
   * `:lat`: The latitude as a float
@@ -29,7 +49,10 @@ defmodule Coord.Point.LatLng do
 
   defstruct lat: 51.178861, lng: -1.826412
 
-  @spec new(float(), float()) :: %__MODULE__{}
+  @doc """
+  Create a new LatLng point for a latitude and longitude
+  """
+  @spec new(float(), float()) :: t()
   def new(lat, lng), do: %__MODULE__{lat: lat, lng: lng}
 
   @doc """
@@ -38,7 +61,7 @@ defmodule Coord.Point.LatLng do
   Uses [Karney's method](https://arxiv.org/abs/1002.1417). Accurate up to 5nm if the point is within
   3900km of the central meridian.
   """
-  @spec from(%UTM{}) :: %__MODULE__{}
+  @spec from(UTM.t()) :: t()
   def(from(%UTM{zone: z, hemi: h, e: easting, n: northing, datum: datum})) do
     # /**
     #  * Converts UTM zone/easting/northing coordinate to latitude/longitude.
@@ -252,7 +275,7 @@ defmodule Coord.Point.LatLng do
     fmod(lng + 540, 360) - 180
   end
 
-  def wrap_lat(lat) when -90 <= lat and lat <= 90 do
+  defp wrap_lat(lat) when -90 <= lat and lat <= 90 do
     # From <https://cdn.jsdelivr.net/npm/geodesy@2/dms.js>, eventually called by the LatLon_Utm
     # constructor
     #
@@ -268,7 +291,7 @@ defmodule Coord.Point.LatLng do
     lat
   end
 
-  def wrap_lat(lat) do
+  defp wrap_lat(lat) do
     #   return Math.abs((degrees%360 + 270)%360 - 180) - 90; // triangle wave p:360 a:±90 TODO: fix e.g. -315°
     # }
     # TODO: what is the implication of the todo comment above?
