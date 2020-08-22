@@ -7,7 +7,7 @@ Right now it provides structs to represent locations with points in UTM and
 LatLng format, and functions to convert between the two formats.
 
 The module has been tested by comparing the results of converting hundreds of
-thousands of points against a the reference implementation
+thousands of points against the reference implementation
 [GeoConvert](https://geographiclib.sourceforge.io/html/GeoConvert.1.html). The
 conversion functions in GeoConvert were initially written by the author of the
 paper which introduced the algorithms used by this module and Geodesy to convert
