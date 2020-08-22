@@ -16,6 +16,7 @@ defmodule CoordTest.Point.PropTest do
     # See the bug report I filed with Geodesy
     # <https://github.com/chrisveness/geodesy/issues/86>
 
+    # @tag :prop
     # property "UTM -> LatLng -> UTM" do
     #   forall start <- utm() do
     #     start
@@ -25,6 +26,7 @@ defmodule CoordTest.Point.PropTest do
     #   end
     # end
 
+    @tag :prop
     property "LatLng -> UTM -> LatLng" do
       forall start <- latlng_that_can_be_converted_to_utm() do
         start
@@ -36,6 +38,7 @@ defmodule CoordTest.Point.PropTest do
   end
 
   describe "conversion should give same result as reference for" do
+    @tag :prop
     property "LatLng -> UTM" do
       forall latlng_point <- latlng_that_can_be_converted_to_utm() do
         utm_point = UTM.from(latlng_point)
@@ -44,6 +47,7 @@ defmodule CoordTest.Point.PropTest do
       end
     end
 
+    @tag :prop
     property "UTM -> LatLng" do
       forall utm_point <- utm() do
         latlng_point = LatLng.from(utm_point)
@@ -53,6 +57,7 @@ defmodule CoordTest.Point.PropTest do
     end
   end
 
+  @tag :prop
   property "UTM.mgrs_band/1 should give same result as reference" do
     forall point <- utm() do
       band = UTM.mgrs_band(point)
