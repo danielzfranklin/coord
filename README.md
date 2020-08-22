@@ -6,6 +6,18 @@ This modules aims to be a port of portions of the library
 Right now it provides structs to represent locations with points in UTM and
 LatLng format, and functions to convert between the two formats.
 
+The module has been tested by comparing the results of converting hundreds of
+thousands of points against a the reference implementation
+[GeoConvert](https://geographiclib.sourceforge.io/html/GeoConvert.1.html). The
+conversion functions in GeoConvert were initially written by the author of the
+paper which introduced the algorithms used by this module and Geodesy to convert
+points between latitude/longitude and UTM. Many thanks to the authors of
+[PropCheck](https://hexdocs.pm/propcheck/PropCheck.html) and
+[PropEr](http://proper.softlab.ntua.gr/) for making this automated testing
+feasible.
+
+## Converting from latitude and longitude to UTM
+
 ```elixir
 iex> use Coord
 iex> LatLng.new(51.178861, -1.826412) |> UTM.from()
