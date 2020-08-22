@@ -1,7 +1,7 @@
 defmodule Coord.MixProject do
   use Mix.Project
 
-  @github "https://github.com/dzfranklin/coord"
+  @github "https://github.com/danielzfranklin/coord"
 
   def project do
     [
