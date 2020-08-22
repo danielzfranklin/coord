@@ -1,6 +1,7 @@
-  use ExUnit.Case, async: true
   use PropCheck, default_opts: [numtests: 1_000]
 defmodule CoordTest.Point.PropTest do
+  # GeoConvert isn't thread safe, don't run it async
+  use ExUnit.Case
   import PointHelpers
   use Coord
 
