@@ -1,9 +1,11 @@
 defmodule GeoConvert do
   use Coord
 
+  @executable :os.find_executable('GeoConvert')
+
   def latlng_to_utm(latlng) do
-    {out, 0} =
-      System.cmd("GeoConvert", [
+    out =
+      call([
         # output UTM
         "-u",
         "--input-string",
@@ -37,8 +39,8 @@ defmodule GeoConvert do
   end
 
   def utm_to_latlng(utm) do
-    {out, 0} =
-      System.cmd("GeoConvert", [
+    out =
+      call([
         # output LatLng in decimal
         "-g",
         "--input-string",
@@ -58,6 +60,43 @@ defmodule GeoConvert do
     lng = String.to_float(lng)
 
     %LatLng{lat: lat, lng: lng}
+  end
+
+  def utm_to_mgrs_band(utm) do
+    out =
+      call([
+        # output MGRS
+        "-m",
+        "--input-string",
+        utm_to_geoconv(utm)
+      ])
+
+    case Regex.run(~r/\d+([A-Z])/, out) do
+      [_, band] ->
+        band
+        |> String.downcase()
+        |> String.to_atom()
+
+      _ ->
+        raise(ArgumentError, "Invalid UTM")
+    end
+  end
+
+  def call(args) do
+    port =
+      Port.open({:spawn_executable, @executable}, [
+        :stream,
+        :binary,
+        {:args, args},
+        :use_stdio,
+        :stderr_to_stdout,
+        :exit_status
+      ])
+
+    receive do
+      {^port, {:data, out}} ->
+        out
+    end
   end
 
   # By default elixir would output floats in scientific notation, which GeoConvert misparses

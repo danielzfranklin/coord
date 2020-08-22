@@ -1,6 +1,6 @@
-defmodule CoordProp.Point do
   use ExUnit.Case, async: true
   use PropCheck, default_opts: [numtests: 1_000]
+defmodule CoordTest.Point.PropTest do
   import PointHelpers
   use Coord
 
@@ -52,28 +52,6 @@ defmodule CoordProp.Point do
     end
   end
 
-  def latlng_that_can_be_converted_to_utm() do
-    let [
-      lat <- float(-80.0, 84.0),
-      lng <- float(-180.0, 180.0)
-    ] do
-      LatLng.new(lat, lng)
-    end
-  end
-
-  def utm() do
-    let [
-      zone <- integer(1, 60),
-      hemi <- oneof([:n, :s]),
-      e <- float(),
-      n <- float()
-    ] do
-      try do
-        UTM.new(zone, hemi, e, n)
-      rescue
-        # if the coordinate is invalid, create a new one
-        ArgumentError -> utm()
-      end
     end
   end
 end
