@@ -18,7 +18,7 @@ defmodule Coord.MixProject do
       description: description(),
       # See <https://elixirforum.com/t/loading-modules-in-test-helper-exs-file/16609>
       elixirc_paths: elixirc_paths(Mix.env()),
-      package: package,
+      package: package(),
       # docs
       name: "Coord",
       source_url: @github,
