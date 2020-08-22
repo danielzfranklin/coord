@@ -36,9 +36,22 @@ iex> LatLng.new(51.178861, -1.826412) |> UTM.from()
 }
 ```
 
-The only datum provided by default is WGS84, but you can specify a different
-datum if it can be represented by a surface defined using the same parameters as
-WGS84.
+## Converting from UTM to latitude and longitude
+
+```elixir
+iex> use Coord
+iex> UTM.new(30, :n, 582031.96, 5670369.80) |> LatLng.from()
+%Coord.Point.LatLng{
+  lat: 51.17886095867467,
+  lng: -1.8264119691783214
+}
+```
+
+## Datum
+
+The default datum is WGS84, but you can specify a different datum if it can be
+represented by a surface defined using the same parameters as WGS84. See `Coord.Datum` and
+`Coord.Datum.Ellipsoid`.
 
 ## Documentation
 
